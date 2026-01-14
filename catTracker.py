@@ -1,20 +1,43 @@
 import random 
 import time
+from discord.ext import tasks, commands
 
-class catTracker():
-    def __init__(self):
+class catTracker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
         self.hunger = 100
         self.boredom = 100
         self.love = 100
         self.grooming = 100
         self.recoverAmt = 100
-        self.fullText = [
+        self.fedText = [
             "Sfingi is feeling nice and full!",
             "Even though his belly is ready to burst, he wants more food...",
             "Sfingi looks up at you with his fat little belly.",
             "Sfingi walks away with his belly bouncing around."
         ]
-        self.sounds = ["thanks big dawg, ppreciate it", "merow", "meoww", "purr", "grrr", "meYOEW"]
+        self.thanksText = ["thanks big dawg, ppreciate it", "merow", "meoww", "purr", "grrr", "meYOEW"]
+
+    # def cog_unload(self):
+    #     self.decreaseHunger.cancel()
+
+    @commands.Cog.listener()
+    async def on_message(self, msg):
+        if msg.author == self.bot.user:
+            return
+        
+        if "test" in msg:
+            await msg.channel.send("test")
+
+    # @tasks.loop(seconds=5.0)
+    # async def decreaseHunger(self):
+    #     self.hunger -= 1
+    #     print(self.hunger)
+
+    # @decreaseHunger.before_loop
+    # async def before_decrease(self):
+    #     print("Waiting...")
+    #     await self.bot.wait_until_ready()
 
     def getStatus(self):
         #Prints out all the information about sfingi
@@ -23,8 +46,9 @@ class catTracker():
     def feed(self):
         #This method allows the discord user to feed Sfingi and add to his hunger and returns a randomized sound
         self.hunger = self.recoverAmt 
-        sound = self.randomizeSound() 
-        return f'"{sound}" - Sfingi is feeling nice and full.'
+        randomThanksText = self.randomizeSound(self.thanksText) 
+        randomFullText =self.randomizeSound(self.fedText)
+        return f'"{randomThanksText}" - "{randomFullText}"'
     
     def pet(self):
         #This method allows the discord user to pet Sfingi and add to his boredom and love and returns a randomized sound.
@@ -34,11 +58,9 @@ class catTracker():
         print(f"Petting sound is {sound}")
         return sound
     
-    def randomizeSound(self):
+    def randomizeSound(self, textList):
         #Returns a randomized sound when a list of sounds
-        print("Sound has been randomized")
-        sound = self.sounds[random.randrange(len(self.sounds))]
-        print(f"Sound is hello")
+        sound = textList[random.randrange(len(textList))]
         return sound
     
     
