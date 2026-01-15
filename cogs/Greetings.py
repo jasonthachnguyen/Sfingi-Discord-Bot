@@ -6,14 +6,9 @@ class Greetings(commands.Cog):
         self.bot = bot
         self._last_member = None
 
-    def setup(bot):
-        bot.add_cog(Greetings(bot))
-
     @commands.Cog.listener()
-    async def on_member_join(self, member):
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send(f'Welcome {member.mention}.')
+    async def on_ready(self):
+       print("ready")
 
     @commands.command()
     async def hello(self, ctx, *, member: discord.Member = None):
@@ -24,4 +19,7 @@ class Greetings(commands.Cog):
         else:
             await ctx.send(f'Hello {member.name}... This feels familiar.')
         self._last_member = member
+
+async def setup(bot):
+    await bot.add_cog(Greetings(bot))
 

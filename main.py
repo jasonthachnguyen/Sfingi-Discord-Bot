@@ -1,10 +1,12 @@
 import discord
 import catTracker
+from cogs import Greetings
 from discord.ext import commands, tasks
 import logging
 from dotenv import load_dotenv
 import os 
 import time
+import asyncio
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -46,7 +48,15 @@ async def on_ready():
 #     time.sleep(2)
 #     feedMessage = sfingi.feed()
 #     await ctx.send(feedMessage)
-async def botSetup():
-    await bot.load_extension("cogs.Greetings")
+async def Load():
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
+#bot.add_cog(Greetings(bot))
 
-bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+async def main():
+    async with bot:
+        await Load()    
+        await bot.start(token=token)
+
+asyncio.run(main())
