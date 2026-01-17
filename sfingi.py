@@ -9,9 +9,9 @@ class Sfingi:
     """
     def __init__(self):
         self.hunger = 100.0
-        self.affection = 100
-        self.hygiene = 100
-        self.recoverAmt = 100
+        self.affection = 100.0
+        self.hygiene = 100.0
+        self.recoverAmt = 100.0
         self.afterFeedText = [
             "Sfingi is feeling nice and full!",
             "Even though his belly is ready to burst, he wants more food...",
@@ -21,7 +21,7 @@ class Sfingi:
         self.afterPetText = [
             "Sfingi purrs as you softly brush your him against him.",
             "As you pet Sfingi, you feel his belly jiggle...",
-            "While petting Sfingi, he slowly walks away..."
+            "While petting Sfingi, he slowly walks away...",
             "Sfingi is happy with you!"
         ]
         self.afterWashText = [
@@ -38,14 +38,14 @@ class Sfingi:
         ]
         self.hygieneStatusText = [
             "Sfingi is as clean as a fiddle!",
-            "Sfingi is clean enough to not smell."
-            "Sfingi is a little stinky..."
+            "Sfingi is clean enough to not smell.",
+            "Sfingi is a little stinky...",
             "Sfingi REEKS!!!!!"
         ]
-        self.affection = [
-            "Sfingi feels loved and appreciated."
-            "Sfingi is okay but wouldn't mind more affection."
-            "Sfingi is starting to feel a bit lonely."
+        self.affectionStatusText = [
+            "Sfingi feels loved and appreciated.",
+            "Sfingi is okay but wouldn't mind more affection.",
+            "Sfingi is starting to feel a bit lonely.",
             "Sfingi is meowing and whining for your affection."
         ]
         self.thanksText = [
@@ -56,19 +56,74 @@ class Sfingi:
             "REORRRW", 
             "MEEEEEEOWWWWWWW"]
 
-    def getStatus():
-        pass
+    #RESET METHODS
+    def resetHunger(self):
+        self.hunger = self.recoverAmt
 
+    def resetAffection(self):
+        self.affection = self.recoverAmt
+
+    def resetHygiene(self):
+        self.hygiene = self.recoverAmt
+
+    #DECREASE METHODS
+    def decreaseHunger(self):
+        self.hunger = max(0, self.hunger - 1) 
+
+    def decreaseAffection(self):
+        self.affection -= max(0, self.affection - 1) 
+
+    def decreaseHygiene(self):
+        self.hygiene -= max(0, self.hygiene - 1) 
+
+    #ACCESSORS
     def getNeedsText(self, need, statusTextList):
         """
         Returns the respective text from the list of hunger status texts based on the current hunger.
 
-        :param self: Description
+        :param self: The object itself
+        :param need: Any of the defined needs of Sfingi
+        :param statusTextList: A list with all of the text for the status
         """
         #Divide 100 by the length of the text list to get the dividend which we then divide the hunger by to get the right index.
-        derivedIndex = math.ceil(need / (100/len(statusTextList)))
-        return statusTextList[derivedIndex]
+        derivedIndex = math.ceil(need / (self.recoverAmt/len(statusTextList))) - 1
+        statusTextListReversed = list(reversed(statusTextList))
+        return statusTextListReversed[derivedIndex]
+    
+    def getAfterFeedText(self):
+        return self.randomizeSound(self.afterFeedText)
+    
+    def getAfterPetText(self):
+        return self.randomizeSound(self.afterPetText)
+    
+    def getAfterWashText(self):
+        return self.randomizeSound(self.afterWashText)
+    
+    def getStatus(self):
+        hungerText = self.getNeedsText(self.hunger, self.hungerStatusText)
+        affectionText = self.getNeedsText(self.affection, self.affectionStatusText)
+        hygieneText = self.getNeedsText(self.hygiene, self.hygieneStatusText)
+        return f"{hungerText}\n{affectionText}\n{hygieneText}"
+    
+    def getThanksText(self, specificText = -1):
+        """
+        Returns a specific element of the thanks text list - set to return a random element by default.
+        
+        :param self: The object itself
+        :param specificText: Used if a specific index of thanksText List needs to be used
+        """
+        return self.randomizeSound(self.thanksText) if specificText == -1 else self.thanksText[specificText]
+    
+    def getHungerValue(self):
+        return self.hunger
+    
+    def getAffectionValue(self):
+        return self.affection
+    
+    def getHygieneValue(self):
+        return self.hygiene
 
+    #UTILITY
     def randomizeSound(self, textList):
         #Returns a randomized sound when a list of sounds
         sound = textList[random.randrange(len(textList))]

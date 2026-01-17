@@ -4,3 +4,5 @@ discord.log
 _pycache_
 cogs/_pycache_
 *.pyc
+*.code-workspace
+.vscode
