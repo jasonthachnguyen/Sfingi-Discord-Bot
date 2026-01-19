@@ -43,9 +43,9 @@ class PetManager(commands.Cog):
 
     #COMMANDS    
     @commands.command()
-    async def feed(self, ctx, help="Hello??"):
+    async def feed(self, ctx):
         """
-        Resets the hunger value back to 100 and generates text for user feedback
+        Feeds Sfingi some food and fill up his belly!
         """
         self.sfingi.resetHunger()
         randomThanksText = self.sfingi.getThanksText()
@@ -56,7 +56,7 @@ class PetManager(commands.Cog):
     @commands.command()
     async def pet(self, ctx):
         """
-        Resets the affection back to 100 and generates text for user feedback
+        Pet Sfingi so that he feels loved.
         """
         self.sfingi.resetAffection()
         thanksText = self.sfingi.getThanksText()
@@ -67,10 +67,7 @@ class PetManager(commands.Cog):
     @commands.command()
     async def wash(self, ctx):
         """
-        Resets the hyigene back to 100 and generates text for user feedback.
-        
-        :param self: Description
-        :param ctx: Description
+        Wash the stink out of Sfingi!
         """
         self.sfingi.resetHygiene()
         thanksText = self.sfingi.getThanksText()
@@ -80,6 +77,9 @@ class PetManager(commands.Cog):
     
     @commands.command()
     async def status(self, ctx):
+        """
+        Get the status on how Sfingi is doing.
+        """
         statusMsg = self.sfingi.getStatus()
         await ctx.send(statusMsg)
 

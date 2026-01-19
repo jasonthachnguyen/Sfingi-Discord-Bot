@@ -71,10 +71,10 @@ class Sfingi:
         self.hunger = max(0, self.hunger - 1) 
 
     def decreaseAffection(self):
-        self.affection -= max(0, self.affection - 1) 
+        self.affection = max(0, self.affection - 1) 
 
     def decreaseHygiene(self):
-        self.hygiene -= max(0, self.hygiene - 1) 
+        self.hygiene = max(0, self.hygiene - 1) 
 
     #ACCESSORS
     def getNeedsText(self, need, statusTextList):
