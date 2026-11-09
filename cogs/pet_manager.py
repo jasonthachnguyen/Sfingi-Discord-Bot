@@ -1,13 +1,13 @@
 from sfingi import Sfingi
+import discord
+import re
 from discord.ext import commands, tasks
 
+# PetManager inherits from Cog
 class PetManager(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.sfingi = Sfingi()
-        self.decreaseHunger.start()
-        self.decreaseAffection.start()
-        self.decreaseHygiene.start()
 
     def cog_unload(self):
         self.decreaseHunger.cancel()
@@ -29,6 +29,12 @@ class PetManager(commands.Cog):
         self.sfingi.decreaseHygiene()
         print(self.sfingi.getHygieneValue())
 
+    @commands.Cog.listener("on_ready")
+    async def on_ready(self):
+        self.decreaseHunger.start()
+        self.decreaseAffection.start()
+        self.decreaseHygiene.start()
+
     #EVENTS
     @commands.Cog.listener("on_message")
     async def on_message(self, message):   
@@ -42,7 +48,8 @@ class PetManager(commands.Cog):
             await message.channel.send(f"https://tenor.com/view/orange-cat-laughing-gif-13031147940704744720")
 
     #COMMANDS    
-    @commands.command()
+
+    @commands.command(name="feed")
     async def feed(self, ctx):
         """
         Feeds Sfingi some food and fill up his belly!
@@ -83,6 +90,7 @@ class PetManager(commands.Cog):
         statusMsg = self.sfingi.getStatus()
         await ctx.send(statusMsg)
 
+# Main entry point when main.py loads this extension 
 async def setup(bot):
     await bot.add_cog(PetManager(bot))
     
