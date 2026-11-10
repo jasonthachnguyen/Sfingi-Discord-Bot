@@ -1,10 +1,11 @@
-from sfingi import Sfingi
 import discord
-import re
+from discord import app_commands
 from discord.ext import commands, tasks
+from sfingi import Sfingi
 
 # PetManager inherits from Cog
-class PetManager(commands.Cog):
+# name adds metadata to the Cog
+class PetManager(commands.Cog, name="Pet Manager"):
     def __init__(self, bot):
         self.bot = bot
         self.sfingi = Sfingi()
@@ -29,11 +30,11 @@ class PetManager(commands.Cog):
         self.sfingi.decreaseHygiene()
         print(self.sfingi.getHygieneValue())
 
-    @commands.Cog.listener("on_ready")
-    async def on_ready(self):
-        self.decreaseHunger.start()
-        self.decreaseAffection.start()
-        self.decreaseHygiene.start()
+    # @commands.Cog.listener("on_ready")
+    # async def on_ready(self):
+        # self.decreaseHunger.start()
+        # self.decreaseAffection.start()
+        # self.decreaseHygiene.start()
 
     #EVENTS
     @commands.Cog.listener("on_message")
@@ -49,8 +50,9 @@ class PetManager(commands.Cog):
 
     #COMMANDS    
 
-    @commands.command(name="feed")
-    async def feed(self, ctx):
+    # Declaring a slash command using the app_commands.command decorator from the discord module
+    @app_commands.command()
+    async def feed(self, interact):
         """
         Feeds Sfingi some food and fill up his belly!
         """
@@ -58,10 +60,10 @@ class PetManager(commands.Cog):
         randomThanksText = self.sfingi.getThanksText()
         afterFeedText = self.sfingi.getAfterFeedText()
         response = f'"{randomThanksText}" - {afterFeedText}'
-        await ctx.send(response)
+        await interact.response.send_message(response)
 
-    @commands.command()
-    async def pet(self, ctx):
+    @app_commands.command()
+    async def pet(self, interact):
         """
         Pet Sfingi so that he feels loved.
         """
@@ -69,10 +71,10 @@ class PetManager(commands.Cog):
         thanksText = self.sfingi.getThanksText()
         afterPetText = self.sfingi.getAfterPetText()
         response = f'"{thanksText}" - {afterPetText}'
-        await ctx.send(response)
+        await interact.response.send_message(response)
 
-    @commands.command()
-    async def wash(self, ctx):
+    @app_commands.command()
+    async def wash(self, interact):
         """
         Wash the stink out of Sfingi!
         """
@@ -80,15 +82,22 @@ class PetManager(commands.Cog):
         thanksText = self.sfingi.getThanksText()
         afterWashText = self.sfingi.getAfterWashText()
         response = f'"{thanksText}" - {afterWashText}'
-        await ctx.send(response)
+        await interact.response.send_message(response)
     
-    @commands.command()
-    async def status(self, ctx):
+    @app_commands.command()
+    async def status(self, interact):
         """
         Get the status on how Sfingi is doing.
         """
         statusMsg = self.sfingi.getStatus()
-        await ctx.send(statusMsg)
+        await interact.response.send_message(statusMsg)
+
+    @app_commands.command()
+    async def testcog(self, interact):
+        """
+        Get the status on how Sfingi is doing.
+        """
+        await interact.response.send_message("cog works too")
 
 # Main entry point when main.py loads this extension 
 async def setup(bot):
